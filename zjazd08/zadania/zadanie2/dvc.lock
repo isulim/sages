@@ -1,0 +1,58 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python3 01_preprocess.py data/preprocessed/netflix_train.csv data/preprocessed/netflix_val.csv
+    deps:
+    - path: 01_preprocess.py
+      hash: md5
+      md5: 908ce5f3935e9c0e5a41b888e1ee547c
+      size: 848
+    outs:
+    - path: data/preprocessed/netflix_train.csv
+      hash: md5
+      md5: c8b76734229884b1d89c52d61ca000aa
+      size: 87914
+    - path: data/preprocessed/netflix_val.csv
+      hash: md5
+      md5: 0633895cd8ba8545bcbc6755b0620a4c
+      size: 23524
+  train:
+    cmd: python3 02_train.py data/preprocessed/netflix_train.csv data/preprocessed/netflix_val.csv
+    deps:
+    - path: 02_train.py
+      hash: md5
+      md5: 99d53fe9e5ee2f620f2636bd80457730
+      size: 1423
+    - path: data/preprocessed/netflix_train.csv
+      hash: md5
+      md5: c8b76734229884b1d89c52d61ca000aa
+      size: 87914
+    - path: data/preprocessed/netflix_val.csv
+      hash: md5
+      md5: 0633895cd8ba8545bcbc6755b0620a4c
+      size: 23524
+    params:
+      params.yaml:
+        train.growth: linear
+        train.n_changepoints: 10
+        train.seasonality_mode: additive
+    outs:
+    - path: models/prophet/model.json
+      hash: md5
+      md5: a6b5dbe70280a073a3949f16e2cdc1cf
+      size: 675776
+  eval:
+    cmd: python3 03_eval.py data/preprocessed/netflix_val.csv
+    deps:
+    - path: 03_eval.py
+      hash: md5
+      md5: 427e66ee044a3f805fab36a2c7ddfb4d
+      size: 923
+    - path: data/preprocessed/netflix_val.csv
+      hash: md5
+      md5: 0633895cd8ba8545bcbc6755b0620a4c
+      size: 23524
+    - path: models/prophet/model.json
+      hash: md5
+      md5: a6b5dbe70280a073a3949f16e2cdc1cf
+      size: 675776

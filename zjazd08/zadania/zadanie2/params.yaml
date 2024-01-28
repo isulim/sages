@@ -1,0 +1,4 @@
+train:
+  growth: linear
+  seasonality_mode: additive
+  n_changepoints: 10

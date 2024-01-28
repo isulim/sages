@@ -1,0 +1,36 @@
+stages:
+  preprocess:
+    cmd: python3 01_preprocess.py data/preprocessed/netflix_train.csv data/preprocessed/netflix_val.csv
+    deps:
+    - 01_preprocess.py
+    outs:
+    - data/preprocessed/netflix_train.csv
+    - data/preprocessed/netflix_val.csv
+  train:
+    cmd: python3 02_train.py data/preprocessed/netflix_train.csv data/preprocessed/netflix_val.csv
+    deps:
+    - data/preprocessed/netflix_train.csv
+    - data/preprocessed/netflix_val.csv
+    - 02_train.py
+    outs:
+    - models/prophet/model.json
+    params:
+    - train.growth
+    - train.seasonality_mode
+    - train.n_changepoints
+  eval:
+    cmd: python3 03_eval.py data/preprocessed/netflix_val.csv
+    deps:
+    - data/preprocessed/netflix_val.csv
+    - 03_eval.py
+    - models/prophet/model.json
+
+metrics:
+- eval/metrics.json
+plots:
+- eval/plots/metrics:
+    x: step
+artifacts:
+  prophet:
+    path: models/prophet/model.json
+    type: model

@@ -1,0 +1,9 @@
+service: "service:srv"
+include:
+  - "service.py"
+python:
+    requirements_txt: "./requirements.txt"
+models:
+    - "netflixprophetmodel:latest"
+docker:
+    python_version: "3.11"
